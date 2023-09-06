@@ -1,44 +1,27 @@
 #!/usr/bin/env bash
 # script that sets up your web servers for the deployment of web_static
 
-
 # Install Nginx if it not already installed
 command -v &> /dev/null || {
 	sudo apt update
 	sudo apt install -y nginx
 }
 
-
 # Create the folders /data/web_static/releases/test/ if they don’t already exist
 sudo mkdir -p /data/web_static/releases/test/
-
 
 # Create the folder /data/web_static/shared/ if it doesn’t already exist
 sudo mkdir -p /data/web_static/shared/
 
-
 # Create a fake HTML file /data/web_static/releases/test/index.html
-html_file=$(cat <<EOL
-    <html>
-	<head>
-  	</head>
-  	<body>
-    	    Hello World!
-  	</body>
-    </html>
-EOL
-)
-echo "$html_file" | sudo tee /data/web_static/releases/test/index.html &> /dev/null
-
+echo "Hello World!" | sudo tee /data/web_static/releases/test/index.html &> /dev/null
 
 # Create a symbolic link /data/web_static/current
 # linked to the /data/web_static/releases/test/ folder. 
 sudo ln -sf /data/web_static/releases/test/ /data/web_static/current
 
-
 # Give ownership of the /data/ folder to the ubuntu user AND group
 sudo chown -R ubuntu:ubuntu /data/
-
 
 # Update the Nginx configuration to serve the content of
 # /data/web_static/current/ to hbnb_static
@@ -66,7 +49,6 @@ echo "server {
         alias /data/web_static/current/;
     }
 }" | sudo tee /etc/nginx/sites-available/default
-
 
 # restart the Nginx server
 sudo service nginx restart
