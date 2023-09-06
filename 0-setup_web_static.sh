@@ -2,10 +2,8 @@
 # script that sets up your web servers for the deployment of web_static
 
 # Install Nginx if it not already installed
-command -v &> /dev/null || {
-	sudo apt update
-	sudo apt install -y nginx
-}
+sudo apt update
+sudo apt install -y nginx
 
 # Create the folders /data/web_static/releases/test/ if they don’t already exist
 sudo mkdir -p /data/web_static/releases/test/
@@ -14,7 +12,7 @@ sudo mkdir -p /data/web_static/releases/test/
 sudo mkdir -p /data/web_static/shared/
 
 # Create a fake HTML file /data/web_static/releases/test/index.html
-echo "Hello World!" | sudo tee /data/web_static/releases/test/index.html &> /dev/null
+echo "Hello World!" | sudo tee /data/web_static/releases/test/index.html
 
 # Create a symbolic link /data/web_static/current
 # linked to the /data/web_static/releases/test/ folder. 
