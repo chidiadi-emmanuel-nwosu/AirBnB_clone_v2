@@ -14,5 +14,5 @@ def do_clean(number=0):
 
     with lcd('versions'):
         local(f'ls -t | tail -n {num} | xargs rm -rf')
-    with cd ('/data/web_static/releases'):
+    with cd('/data/web_static/releases'):
         run(f'ls -t | tail -n {num} | xargs rm -rf')
