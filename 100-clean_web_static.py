@@ -13,6 +13,6 @@ def do_clean(number=0):
     num += 1
 
     with lcd('versions'):
-        local(f'ls -t | tail -n {num} | xargs rm -rf')
+        local(f'ls -t | tail -n +{num} | xargs rm -rf')
     with cd('/data/web_static/releases'):
-        run(f'ls -t | tail -n {num} | xargs rm -rf')
+        run(f'ls -t | tail -n +{num} | xargs rm -rf')
