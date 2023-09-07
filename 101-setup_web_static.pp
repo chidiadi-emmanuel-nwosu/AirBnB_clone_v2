@@ -1,7 +1,6 @@
 # Install Nginx package
 exec { 'install_nginx':
-  provider => shell,
-  command  => 'sudo apt update ; sudo apt install -y nginx',
+  command => 'sudo apt update && sudo apt install -y nginx',
 }
 
 # Create directories if they don't exist
@@ -34,10 +33,9 @@ file { '/data':
 }
 
 # Nginx configuration
-exec { '/etc/nginx/sites-available/default':
-  provider => shell,
-  command  =>  @(END)
-echo "server {
+file { '/etc/nginx/sites-available/default':
+  ensure  => 'file',
+  content => 'server {
     listen 80 default_server;
     listen [::]:80 default_server;
     root   /var/www/html;
@@ -53,19 +51,19 @@ echo "server {
 
     error_page 404 /404.html;
     location /404 {
-	root /etc/nginx/html;
-	internal;      
+        root /etc/nginx/html;
+        internal;      
     }
 
     location /hbnb_static {
         alias /data/web_static/current/;
     }
-}" | sudo tee /etc/nginx/sites-available/default
-END
+  }',
 }
 
-# restart nginx server
-exec { 'nginx':
-  provider => shell,
-  command  => 'sudo service nginx restart',
+# Restart nginx server
+service { 'nginx':
+  ensure    => 'running',
+  enable    => true,
+  subscribe => File['/etc/nginx/sites-available/default'],
 }
