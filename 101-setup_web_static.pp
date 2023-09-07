@@ -34,9 +34,10 @@ file { '/data':
 }
 
 # Nginx configuration
-file { '/etc/nginx/sites-available/default':
-  content =>  '
-server {
+exec { '/etc/nginx/sites-available/default':
+  provider => shell,
+  command  =>  @(END)
+echo "server {
     listen 80 default_server;
     listen [::]:80 default_server;
     root   /var/www/html;
@@ -59,13 +60,12 @@ server {
     location /hbnb_static {
         alias /data/web_static/current/;
     }
-}',
-  notify  => Service['nginx'],
+}" | sudo tee /etc/nginx/sites-available/default
+END
 }
 
 # restart nginx server
-service { 'nginx':
-  ensure  => 'running',
-  enable  => true,
-  require => File['/etc/nginx/sites-available/default'],
+exec { 'nginx':
+  provider => shell,
+  command  => 'sudo service nginx restart',
 }
