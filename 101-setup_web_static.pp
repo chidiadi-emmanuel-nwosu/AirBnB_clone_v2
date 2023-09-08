@@ -1,50 +1,47 @@
 # Install Nginx package
+exec { 'update':
+  provider => shell,
+  command  => 'sudo apt update',
+  before   => Exec['install_nginx'],
+}
+
+# Install Nginx package
 exec { 'install_nginx':
   provider => shell,
-  command  => 'sudo apt update ; sudo apt install -y nginx',
+  command  => 'sudo apt install -y nginx',
+  before   => Exec['create test directory'],
 }
 
-# Set ownership first
-exec { 'set_ownership':
+exec { 'create test directory':
   provider => shell,
-  command  => 'sudo chown -R ubuntu:ubuntu /data/',
-  require  => [
-    File['/data/web_static/releases/test'],
-    File['/data/web_static/shared'],
-  ],
+  command  => 'sudo mkdir -p /data/web_static/releases/test',
+  before   => Exec['create shared directory']
 }
 
-# Create directories if they don't exist
-file { '/data/web_static/releases/test':
-  ensure  => 'directory',
-  recurse => true,
-}
-
-file { '/data/web_static/shared':
-  ensure => 'directory',
+exec { 'create shared directory':
+  provider => shell,
+  command  => 'sudo mkdir -p /data/web_static/shared',
+  before   => Exec['set_ownership']
 }
 
 # Create a fake HTML file
-file { '/data/web_static/releases/test/index.html':
-  content => 'Hello World!',
-  require => File['/data/web_static/releases/test'],
+exec { 'create html':
+  provider => shell,
+  command  => 'echo "Hello World!" | sudo tee /data/web_static/releases/test/index.html',
+  before   => Exec['create link']
 }
 
 # Create a symbolic link
-file { '/data/web_static/current':
-  ensure  => 'link',
-  target  => '/data/web_static/releases/test/',
-  force   => true,
-  require => [
-    File['/data/web_static/releases/test/index.html'],
-    Exec['set_ownership'],
-  ],
+exec { 'create link':
+  provider => shell,
+  command  => 'sudo ln -sf /data/web_static/releases/test/ /data/web_static/current',
+  before   => Exec['configuration'],
 }
 
 # Nginx configuration
-file { '/etc/nginx/sites-available/default':
-  ensure  => 'file',
-  content => 'server {
+exec { 'configuration':
+  provider => shell,
+  command  => 'echo "server {
     listen 80 default_server;
     listen [::]:80 default_server;
     root   /var/www/html;
@@ -67,14 +64,20 @@ file { '/etc/nginx/sites-available/default':
     location /hbnb_static {
         alias /data/web_static/current/;
     }
-  }',
-  require => Exec['install_nginx'],
+  }" | sudo tee /etc/nginx/sites-available/default',
+  before   => Exec['restart nginx']
 }
 
 # Restart nginx server only when necessary
-service { 'nginx':
-  ensure    => 'running',
-  enable    => true,
-  subscribe => File['/etc/nginx/sites-available/default'],
-  provider  => systemd,
+exec {'restart nginx':
+  provider => shell,
+  command  => 'sudo service nginx restart',
+}
+
+# give ownership
+file {'/data/':
+  ensure  => directory,
+  owner   => 'ubuntu',
+  group   => 'ubuntu',
+  recurse => true,
 }
