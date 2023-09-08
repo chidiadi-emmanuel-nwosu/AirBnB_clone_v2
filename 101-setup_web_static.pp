@@ -1,12 +1,14 @@
 # Install Nginx package
 exec { 'install_nginx':
-  command => 'sudo apt update && sudo apt install -y nginx',
+  provider => shell,
+  command  => 'sudo apt update ; sudo apt install -y nginx',
 }
 
 # Set ownership first
 exec { 'set_ownership':
-  command => 'sudo chown -R ubuntu:ubuntu /data/',
-  require => [
+  provider => shell,
+  command  => 'sudo chown -R ubuntu:ubuntu /data/',
+  require  => [
     File['/data/web_static/releases/test'],
     File['/data/web_static/shared'],
   ],
@@ -76,4 +78,3 @@ service { 'nginx':
   subscribe => File['/etc/nginx/sites-available/default'],
   provider  => systemd,
 }
-
