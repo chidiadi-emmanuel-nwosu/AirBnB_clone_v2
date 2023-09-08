@@ -26,10 +26,9 @@ file { '/data/web_static/current':
 }
 
 # Set ownership
-file { '/data':
-  owner   => 'ubuntu',
-  group   => 'ubuntu',
-  recurse => true,
+exec { '/data/':
+  provider => shell,
+  command  => 'sudo chown -R ubuntu:ubuntu /data/',
 }
 
 # Nginx configuration
@@ -62,8 +61,7 @@ file { '/etc/nginx/sites-available/default':
 }
 
 # Restart nginx server
-service { 'nginx':
-  ensure    => 'running',
-  enable    => true,
-  subscribe => File['/etc/nginx/sites-available/default'],
+exec { 'restart_nginx':
+  provider => shell,
+  command  => 'sudo service nginx restart',
 }
