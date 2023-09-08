@@ -3,6 +3,15 @@ exec { 'install_nginx':
   command => 'sudo apt update && sudo apt install -y nginx',
 }
 
+# Set ownership first
+exec { 'set_ownership':
+  command => 'sudo chown -R ubuntu:ubuntu /data/',
+  require => [
+    File['/data/web_static/releases/test'],
+    File['/data/web_static/shared'],
+  ],
+}
+
 # Create directories if they don't exist
 file { '/data/web_static/releases/test':
   ensure  => 'directory',
@@ -16,19 +25,18 @@ file { '/data/web_static/shared':
 # Create a fake HTML file
 file { '/data/web_static/releases/test/index.html':
   content => 'Hello World!',
+  require => File['/data/web_static/releases/test'],
 }
 
 # Create a symbolic link
 file { '/data/web_static/current':
-  ensure => 'link',
-  target => '/data/web_static/releases/test/',
-  force  => true,
-}
-
-# Set ownership
-exec { '/data/':
-  provider => shell,
-  command  => 'sudo chown -R ubuntu:ubuntu /data/',
+  ensure  => 'link',
+  target  => '/data/web_static/releases/test/',
+  force   => true,
+  require => [
+    File['/data/web_static/releases/test/index.html'],
+    Exec['set_ownership'],
+  ],
 }
 
 # Nginx configuration
@@ -58,10 +66,14 @@ file { '/etc/nginx/sites-available/default':
         alias /data/web_static/current/;
     }
   }',
+  require => Exec['install_nginx'],
 }
 
-# Restart nginx server
-exec { 'restart_nginx':
-  provider => shell,
-  command  => 'sudo service nginx restart',
+# Restart nginx server only when necessary
+service { 'nginx':
+  ensure    => 'running',
+  enable    => true,
+  subscribe => File['/etc/nginx/sites-available/default'],
+  provider  => systemd,
 }
+
