@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<HTML lang="en">
+    <HEAD>
+        <TITLE>{{title}}</TITLE>
+    </HEAD>
+    <BODY>
+        <H1>{{table}}</H1>
+        <UL>
+           {% for id, state in states.items() %}
+           <LI>{{ id }}: <B>{{ state }}</B></LI>
+           {% endfor %}
+        </UL>
+    </BODY>
+</HTML>

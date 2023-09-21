@@ -4,9 +4,10 @@ import models
 from models.base_model import BaseModel, Base
 from models.review import Review
 from models.amenity import Amenity
-from sqlalchemy import Column, Integer, String, ForeignKey, Float, Table
+from sqlalchemy import Column, Integer, String, ForeignKey, Float, Table, DateTime
 from sqlalchemy.orm import relationship
 from os import getenv
+from datetime import datetime
 
 
 place_amenity = Table(
@@ -30,6 +31,9 @@ place_amenity = Table(
 class Place(BaseModel, Base):
     """ A place to stay """
     __tablename__ = "places"
+    id = Column(String(60), primary_key=True)
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow())
+    updated_at = Column(DateTime, nullable=False, default=datetime.utcnow())
     city_id = Column(String(60), ForeignKey("cities.id"), nullable=False)
     user_id = Column(String(60), ForeignKey("users.id"), nullable=False)
     name = Column(String(128), nullable=False)

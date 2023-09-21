@@ -14,7 +14,7 @@ def do_pack():
         created_at = datetime.now().strftime('%Y%m%d%H%M%S')
         local('mkdir -p versions')
         archive_name = f"web_static_{created_at}.tgz"
-        local(f'tar -czvf versions/{archive_name} web_static')
+        local(f'tar -cvzf versions/{archive_name} web_static')
         return f"versions/{archive_name}"
     except Exception as e:
         return None
