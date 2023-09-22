@@ -11,9 +11,6 @@ from datetime import datetime
 class State(BaseModel, Base):
     """ State class """
     __tablename__ = "states"
-    id = Column(String(60), primary_key=True)
-    created_at = Column(DateTime, nullable=False, default=datetime.utcnow())
-    updated_at = Column(DateTime, nullable=False, default=datetime.utcnow())
     name = Column(String(128), nullable=False)
     cities = relationship('City', backref="state", cascade="all, delete")
 
