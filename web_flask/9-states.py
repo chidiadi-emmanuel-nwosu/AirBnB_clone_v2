@@ -9,12 +9,6 @@ from models.state import State
 app = Flask("__main__")
 
 
-@app.teardown_appcontext
-def teardown(exception):
-    """calls in the storage close method"""
-    storage.close()
-
-
 @app.route('/states', strict_slashes=False)
 def states():
     """return all states"""
@@ -38,6 +32,12 @@ def states_id(id):
         table="States",
         cities=cities
     )
+
+
+@app.teardown_appcontext
+def teardown(exception):
+    """calls in the storage close method"""
+    storage.close()
 
 
 if __name__ == "__main__":
