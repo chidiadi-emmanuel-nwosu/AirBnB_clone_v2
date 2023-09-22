@@ -6,11 +6,16 @@
     <BODY>
         <H1>{{table}}</H1>
         <UL>
-            {% for i in cities %}
-           <LI>{{ i[0] }}: <B>{{ i[1] }}</B>
+            {% for city in cities | sort(attribute=1) %}
+           <LI>{{ city[0] }}: <B>{{ city[1] }}</B>
                 <UL>
-                    {% for j in i[2] %}
-                    <LI>{{ i[0] }}: <B>{{ j.name }}</B></LI>
+                    {% set names = [] %}
+                    {%- for name in city[2] -%}
+                        {{ names.append(name.name) if names.append(name.name) }}
+                    {%- endfor -%}
+
+                    {% for city_name in names | sort %}
+                    <LI>{{ city[0] }}: <B>{{ city_name }}</B></LI>
                     {% endfor %}
                 </UL>
            </LI>
