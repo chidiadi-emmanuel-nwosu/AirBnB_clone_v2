@@ -5,6 +5,7 @@ from flask import Flask, render_template
 from models import storage
 from models.state import State
 from models.amenity import Amenity
+from models.place import Place
 
 
 app = Flask("__main__")
@@ -16,15 +17,17 @@ def teardown(exception):
     storage.close()
 
 
-@app.route('/hbnb_filters', strict_slashes=False)
+@app.route('/hbnb', strict_slashes=False)
 def list_states():
     """return all states"""
     states = {s.name: s.cities for s in storage.all(State).values()}
     amenities = [amenity for amenity in storage.all(Amenity).values()]
+    places = [place for place in storage.all(Place).values()]
     return render_template(
-        '10-hbnb_filters.html',
+        '100-hbnb.html',
         states=states,
-        amenities=amenities
+        amenities=amenities,
+        places=places
     )
 
 
