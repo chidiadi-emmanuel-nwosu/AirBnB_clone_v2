@@ -6,11 +6,11 @@
     <BODY>
         <H1>{{table}}</H1>
         <UL>
-            {% for city in cities | sort(attribute=1) %}
-           <LI>{{ city[0] }}: <B>{{ city[1] }}</B>
+            {% for state in states.values() | sort(attribute='name') %}
+           <LI>{{ state.id }}: <B>{{ state.name }}</B>
                 <UL>
-                    {% for name in city[2] | sort(attribute='name') %}
-                    <LI>{{ city[0] }}: <B>{{ name.name }}</B></LI>
+                    {% for city in state.cities | sort(attribute='name') %}
+                    <LI>{{ state.id }}: <B>{{ city.name }}</B></LI>
                     {% endfor %}
                 </UL>
            </LI>

@@ -6,8 +6,8 @@
     <BODY>
         <H1>{{ table }}</H1>
         <UL>
-           {% for id, state in states | dictsort(false, 'value') %}
-           <LI>{{ id }}: <B>{{ state }}</B></LI>
+           {% for state in states.values() | sort(attribute='name') %}
+           <LI>{{ state.id }}: <B>{{ state.name }}</B></LI>
            {% endfor %}
         </UL>
     </BODY>

@@ -18,12 +18,12 @@ def teardown(exception):
 @app.route('/cities_by_states', strict_slashes=False)
 def states_cities():
     """return all states"""
-    cities = [(s.id, s.name, s.cities) for s in storage.all(State).values()]
+    states = storage.all(State)
     return render_template(
         '8-cities_by_states.html',
         title="HBNB",
         table="States",
-        cities=cities
+        states=states
     )
 
 
