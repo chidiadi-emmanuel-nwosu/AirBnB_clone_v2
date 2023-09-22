@@ -10,28 +10,17 @@ app = Flask("__main__")
 
 
 @app.route('/states', strict_slashes=False)
-def states():
-    """return all states"""
-    states = {state.id: state.name for state in storage.all(State).values()}
-    return render_template(
-        '9-states.html',
-        title="HBNB",
-        table="States",
-        states=states
-    )
-
-
 @app.route('/states/<id>', strict_slashes=False)
-def states_id(id):
+def states_id(id=None):
     """return all states"""
-    s_id = [s for s in storage.all(State).values() if s.id == str(id)]
-    cities = [(s.id, s.name, s.cities) for s in s_id]
-    return render_template(
-        '9-states.html',
-        title="HBNB",
-        table="States",
-        cities=cities
-    )
+    states = storage.all(State)
+    if id:
+        for state in states.values():
+            if state.id == id:
+                return render_template('9-states.html', state=state)
+        return render_template('9-states.html')
+    else:
+        return render_template('9-states.html', states=states)
 
 
 @app.teardown_appcontext
