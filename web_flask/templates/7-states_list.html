@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <HTML lang="en">
     <HEAD>
-        <TITLE>{{title}}</TITLE>
+        <TITLE>{{ title }}</TITLE>
     </HEAD>
     <BODY>
-        <H1>{{table}}</H1>
+        <H1>{{ table }}</H1>
         <UL>
-           {% for id, state in states.items() | sort(attribute=1) %}
+           {% for id, state in states | dictsort(false, 'value') %}
            <LI>{{ id }}: <B>{{ state }}</B></LI>
            {% endfor %}
         </UL>
