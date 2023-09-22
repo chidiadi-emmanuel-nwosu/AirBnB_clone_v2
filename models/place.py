@@ -4,10 +4,9 @@ import models
 from models.base_model import BaseModel, Base
 from models.review import Review
 from models.amenity import Amenity
-from sqlalchemy import Column, Integer, String, ForeignKey, Float, Table, DateTime
+from sqlalchemy import Column, Integer, String, ForeignKey, Float, Table
 from sqlalchemy.orm import relationship
 from os import getenv
-from datetime import datetime
 
 
 place_amenity = Table(

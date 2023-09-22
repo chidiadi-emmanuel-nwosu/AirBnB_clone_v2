@@ -2,10 +2,9 @@
 """ State Module for HBNB project """
 from models.base_model import BaseModel, Base
 from models.city import City
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 from os import getenv
-from datetime import datetime
 
 
 class State(BaseModel, Base):
