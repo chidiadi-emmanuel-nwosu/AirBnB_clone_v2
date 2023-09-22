@@ -9,13 +9,8 @@
             {% for city in cities | sort(attribute=1) %}
            <LI>{{ city[0] }}: <B>{{ city[1] }}</B>
                 <UL>
-                    {% set names = [] %}
-                    {%- for name in city[2] -%}
-                        {{ names.append(name.name) if names.append(name.name) }}
-                    {%- endfor -%}
-
-                    {% for city_name in names | sort %}
-                    <LI>{{ city[0] }}: <B>{{ city_name }}</B></LI>
+                    {% for name in city[2] | sort(attribute='name') %}
+                    <LI>{{ city[0] }}: <B>{{ name.name }}</B></LI>
                     {% endfor %}
                 </UL>
            </LI>
